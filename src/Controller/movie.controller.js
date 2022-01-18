@@ -1,4 +1,4 @@
-const { getMoviesList, getSeatList, bookTicket } = require('../Service/movie.service');
+const { getMoviesList, getSeatList, bookTicket, getTickets } = require('../Service/movie.service');
 
 const getMovies = async (req, res) => {
     const movies = await getMoviesList();
@@ -30,8 +30,18 @@ const bookMovieTickets = async (req, res) => {
     return;
 }
 
+const getMovieTickets = async (req, res) => {
+    const userId = res.locals.userId;
+    const booking = await getTickets(userId);
+    res.status(200).json({
+        booking
+    });
+    return;
+}
+
 module.exports = {
     getMovies,
     getSeats,
-    bookMovieTickets
+    bookMovieTickets,
+    getMovieTickets
 };

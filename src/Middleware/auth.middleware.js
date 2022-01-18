@@ -14,6 +14,7 @@ const isAuthenticated = (req, res, next) => {
         jwt.verify(authToken, JWT_SECRET, (err, decoded) => {
             if (err) {
                 res.status(401).json({
+                    statuscode: 401,
                     message: 'session expired'
                 })
                 return;

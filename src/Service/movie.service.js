@@ -2,6 +2,7 @@ const movieSchema = require('../Models/movies.model');
 const seatSchema = require('../Models/seats.model');
 const bookingSchema = require('../Models/booking.model');
 const showsSchema = require('../Models/shows.model');
+const theatreSchema = require('../Models/theatre.model');
 
 const getMoviesList = async () => {
     const movies = await movieSchema.find();
@@ -62,8 +63,44 @@ const bookTicket = async (userId, movieId, theatreId, seatId, seats) => {
     }
 }
 
+const getTickets = async(userId) => {
+    const bookings = await bookingSchema.find({userId: userId});
+    const movies = await movieSchema.find();
+    const theatres = await theatreSchema.find();
+    const shows = await showsSchema.find();
+    const bookingObj = JSON.parse(JSON.stringify(bookings))
+    const showObj = JSON.parse(JSON.stringify(shows))
+    bookingObj.map(bookItem => {
+        movies.forEach(movieItem => {
+            if (movieItem._id == bookItem.movieId ){
+                bookItem.movieName = movieItem.name;
+                bookItem.imageUrl = movieItem.image_url;
+                return ;
+            }
+        })
+        theatres.forEach(theatreItem => {
+            if (theatreItem._id == bookItem.theatreId ){
+                bookItem.theatreName = theatreItem.name;
+                bookItem.location = theatreItem.location;
+                return;
+            }
+        })
+        showObj.forEach(showsItem => {
+            showsItem.shows.map(itemsh => {
+            const showIds = Object.keys(itemsh);
+            if (showIds == bookItem.showId){
+                bookItem.showTime = itemsh[showIds];
+                return;
+            }
+        })
+        })
+    })
+    return bookingObj;
+}
+
 module.exports = {
     getMoviesList,
     getSeatList,
-    bookTicket
+    bookTicket,
+    getTickets
 };
