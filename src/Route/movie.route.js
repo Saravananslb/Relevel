@@ -8,6 +8,6 @@ const router = express.Router();
 router.get('/movies', getMovies);
 router.get('/shows/:movieId', getShowsByMovie);
 router.get('/seats/:showId', getSeats);
-router.post('/book', isAuthenticated, bookMovieTickets);
+router.post('/book', bookMovieTickets);
 
 module.exports = router;
